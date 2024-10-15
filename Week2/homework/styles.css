@@ -1,0 +1,38 @@
+body {
+    font-family: 'Arial', sans-serif;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    gap: 20px;
+}
+
+section {
+    background-color: lightgray;
+    padding: 20px;
+    width: 600px;
+}
+
+li {
+    list-style-type: none;
+    margin: 15px 0 0 0;
+}
+
+ul {
+    padding: 0;
+    gap: 10px;
+}
+
+#pfp {
+    border-radius: 50%;
+}
