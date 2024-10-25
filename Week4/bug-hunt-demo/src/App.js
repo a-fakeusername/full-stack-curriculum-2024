@@ -14,25 +14,30 @@ export default function App() {
   });
 
   // 1. We want to increase the counter by one on render, why does it increase by more than one?
+  // It sets the counter, which rerenders the App, which runs useEffect again sets the counter again, and so on.
   useEffect(() => {
     setCounter(counter + 1);
-  }, [counter]);
+  }, []);
 
   // 2. We want to log out the value of counterTwo after we increase it, why doesn't it log the new value?
   // How would you log the new value rather than the old one?
+  // It doesn't log the new value because the state is actually updated at the end of the function.
   const setCountValue = () => {
     setCounterTwo(counterTwo + 1);
-    console.log("Counter Two Value is ", counterTwo); // Bug 2: It logs the old state value
   };
-
+  useEffect(() => {
+    console.log("Counter Two Value is ", counterTwo); // Bug 2: It logs the old state value
+  }, [counterTwo])
+  
   // Fix Bug 1 first!
   // 3. Here, we have a function to change the "name" state variable, why doesn't it work?
   // 3.1. Bonus: if you click "Change name" then click "Increase Count Two", the name changes magically
   const changeName = () => {
     // Bug 3: Directly trying to modify the state object
-    name.fname = "Bruce";
-    name.lname = "Wayne";
-    setName(name);
+    setName({
+      fname: "Bruce",
+      lname: "Wayne"
+    });
   };
 
   // 4. We want to increase the counter by one every second, but it displays NaN
@@ -42,14 +47,16 @@ export default function App() {
     }, 1000);
 
   return () => clearInterval(interval);
-  }, []);
+  }, [time]);
 
   return (
     <div className="App">
       <h1>Bug Hunting: React Edition</h1>
       <button onClick={setCountValue}>Increase Count Two</button>
       <button onClick={changeName}>Change Name</button>
-      {/* 5. Why does the following code cause an infinite loop ? */}
+      {/* 5. Why does the following code cause an infinite loop ? 
+        Because setCounter will call the function immediately, and not on click.
+      */}
       {/* <button onClick={setCounter(counter + 1)}>
         Stupid Button
       </button>{" "} */}
