@@ -10,6 +10,25 @@
 <body>
 	<div id='main-container'>
 		<div id='weather-container'>
+			<div id='weather-header'>
+				<h2 id='date'></h2>
+				<h1 id='cityName'></h1>
+				<br />
+				<br />
+				<div id="weather-info">
+					<span>
+						<h2 id="weather"></h2>
+						<h1 id="current-temp"></h2>
+						<h2 id="aqi"></h2>
+					</span>
+					<img id='weather-icon' src='' alt='' />
+				</div>
+				<br />
+				<br />
+				<ul id="forecast">
+
+				</ul>
+			</div>
 		</div> 
 	</div>
 	<div id='side-container'>
@@ -23,7 +42,7 @@
 
 <script>
 		// USE YOUR OWN API KEY
-		const apiKey = "";
+		const apiKey = "c70faeeaf5ebf3fb6b5060c0e848c53c";
 
         // variable that stores the city that is chosen
 		let city;
@@ -99,9 +118,70 @@
 				lat: lat,
 				lon: lon
 			}
-			//printing the city object to the console
-			console.log(city);
+			//printing the city object to the console\
             // BEGIN CODING HERE
+
+			let historyAPI = `http://api.openweathermap.org/data/2.5/forecast?lat=${city.lat}&lon=${city.lon}&appid=${apiKey}&units=imperial`;
+			let currentAPI = `https://api.openweathermap.org/data/2.5/weather?lat=${city.lat}&lon=${city.lon}&appid=${apiKey}&units=imperial`;
+			let aqiAPI = `http://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+
+			fetch(currentAPI)
+				.then((response) => response.json())
+				.then((data) => {
+					weather = {
+						currentTemp: data.main.temp,
+						weather: data.weather[0].description,
+						forecast: [],
+						icon: data.weather[0].icon
+					}
+				})
+				.then(() => fetch(historyAPI))
+				.then((response) => response.json())
+				.then((data) => {
+					weather.forecast = data.list;
+				})
+				.then(() => fetch(aqiAPI))
+				.then((response) => response.json())
+				.then((data) => {
+					aqi = data.list[0].main.aqi;
+				})
+				.then(() => renderWeather());
+
+		}
+
+		function renderWeather() {
+			console.log(weather);
+			document.querySelector("#cityName").innerText = `Weather for ${city.fullName}`;
+			document.querySelector("#date").innerText = formatDate();
+			document.querySelector("#weather").innerText = weather.weather;
+			document.querySelector("#current-temp").innerText = `${Math.round(weather.currentTemp)}°F`;
+			document.querySelector('#aqi').innerText = `AQI: ${aqi}`;
+			document.querySelector('#weather-icon').src = `./icons/${weather.icon}.svg`;
+			
+			const flexbox = document.querySelector('#forecast');
+			flexbox.innerHTML = '';
+			// loops through each search result and creates and attaches a list item for the unordered list
+			let min = 500, max = -500;
+			for (let i = 0; i < weather.forecast.length; i++) {
+				min = Math.min(min, weather.forecast[i].main.temp);
+				max = Math.max(max, weather.forecast[i].main.temp);
+				if (i % 8 == 7) {
+					const li = document.createElement('li');
+					li.className = 'forecast-item';
+					const title = document.createElement('h2');
+					title.innerHTML = `${formatDate(i / 8 + 1)}`;
+					const img = document.createElement('img');
+					img.src = `./icons/${weather.forecast[i].weather[0].icon}.svg`;
+					const temp = document.createElement('h2');
+					temp.innerHTML = `${Math.round(min)}°F to ${Math.round(max)}°F`;
+					li.appendChild(title);
+					li.appendChild(img);
+					li.appendChild(temp);
+					flexbox.appendChild(li);
+					min = 500;
+					max = -500;
+				}
+			}
 		}
 	</script>
 </html>
