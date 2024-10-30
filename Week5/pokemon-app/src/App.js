@@ -11,7 +11,20 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      Hello World!
+      <AppBar position='sticky'>
+        <Toolbar>
+          <Typography variant='h6' sx={{ flexGrow: 1 }}>
+            Pokedex App
+          </Typography>
+          <IconButton>
+            {theme.palette.mode === 'dark' ? <WbSunny/> : <NightsStay/>}
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+      <Routes>
+        <Route path='/' element={<PokemonList/>}/>
+        <Route path='/:name' element={<PokemonDetail/>}/>
+      </Routes>
     </ThemeProvider>
   );
 }
