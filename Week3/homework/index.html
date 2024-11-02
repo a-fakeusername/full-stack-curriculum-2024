@@ -10,25 +10,23 @@
 <body>
 	<div id='main-container'>
 		<div id='weather-container'>
-			<div id='weather-header'>
-				<h2 id='date'></h2>
-				<h1 id='cityName'></h1>
-				<br />
-				<br />
-				<div id="weather-info">
-					<span>
-						<h2 id="weather"></h2>
-						<h1 id="current-temp"></h2>
-						<h2 id="aqi"></h2>
-					</span>
-					<img id='weather-icon' src='' alt='' />
-				</div>
-				<br />
-				<br />
-				<ul id="forecast">
-
-				</ul>
+			<h2 id='date'></h2>
+			<h1 id='cityName'></h1>
+			<br />
+			<br />
+			<div id="weather-info">
+				<span>
+					<h2 id="weather"></h2>
+					<h1 id="current-temp"></h1>
+					<h2 id="aqi"></h2>
+				</span>
+				<img id='weather-icon' class="hidden" src='' alt='' />
 			</div>
+			<br />
+			<br />
+			<ul id="forecast">
+
+			</ul>
 		</div> 
 	</div>
 	<div id='side-container'>
@@ -157,6 +155,7 @@
 			document.querySelector("#current-temp").innerText = `${Math.round(weather.currentTemp)}°F`;
 			document.querySelector('#aqi').innerText = `AQI: ${aqi}`;
 			document.querySelector('#weather-icon').src = `./icons/${weather.icon}.svg`;
+			document.querySelector('#weather-icon').classList.remove('hidden');
 			
 			const flexbox = document.querySelector('#forecast');
 			flexbox.innerHTML = '';
