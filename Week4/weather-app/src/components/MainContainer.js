@@ -29,6 +29,9 @@ function MainContainer(props) {
   null or an empty object.
   */
   
+  const [weather, setWeather] = useState(null);
+  const [forecast, setForecast] = useState(null);
+  const [aqi, setAqi] = useState(null);
   
   /*
   STEP 3: Fetch Weather Data When City Changes.
@@ -44,6 +47,33 @@ function MainContainer(props) {
   in your state.
   */
   
+  useEffect(() => {
+    if (props.selectedCity) {
+      let historyAPI = `http://api.openweathermap.org/data/2.5/forecast?lat=${props.selectedCity.lat}&lon=${props.selectedCity.lon}&appid=${props.apiKey}&units=imperial`;
+			let currentAPI = `https://api.openweathermap.org/data/2.5/weather?lat=${props.selectedCity.lat}&lon=${props.selectedCity.lon}&appid=${props.apiKey}&units=imperial`;
+			let aqiAPI = `http://api.openweathermap.org/data/2.5/air_pollution?lat=${props.selectedCity.lat}&lon=${props.selectedCity.lon}&appid=${props.apiKey}`;
+
+			fetch(currentAPI)
+				.then((response) => response.json())
+				.then((data) => {
+					setWeather({
+						currentTemp: data.main.temp,
+						weather: data.weather[0].description,
+						icon: data.weather[0].icon
+					});
+				})
+				.then(() => fetch(historyAPI))
+				.then((response) => response.json())
+				.then((data) => {
+					setForecast(data.list);
+				})
+				.then(() => fetch(aqiAPI))
+				.then((response) => response.json())
+				.then((data) => {
+					setAqi(data.list[0].main.aqi);
+				});
+    }
+  }, [props.selectedCity]);
   
   return (
     <div id="main-container">
@@ -58,7 +88,36 @@ function MainContainer(props) {
         Break down the data object and figure out what you want to display (e.g., temperature, weather description).
         This is a good section to play around with React components! Create your own - a good example could be a WeatherCard
         component that takes in props, and displays data for each day of the week.
-        */}
+        */
+        (weather && (
+          <>
+            <h2 id='date'>{formatDate()}</h2>
+            <h1 id='cityName'>Weather for {props.selectedCity.fullName}</h1>
+            <br />
+            <br />
+            <div id="weather-info">
+              <span>
+                <h2 id="weather">{weather.weather}</h2>
+                <h1 id="current-temp">{Math.round(weather.currentTemp)}°F</h1>
+                <h2 id="aqi">AQI: {aqi}</h2>
+              </span>
+              <img id='weather-icon' src={`./icons/${weather.icon}.svg`} alt={weather.weather} />
+            </div>
+            <br />
+            <br />
+            <ul id="forecast">
+              {forecast && forecast.map((day, index) => (
+                index % 8 === 7 &&
+                <li key={index} className="forecast-item">
+                  <h3>{formatDate(index)}</h3>
+                  <img src={`./icons/${day.weather[0].icon}.svg`} alt={day.weather[0].description} />
+                  <h4>{Math.round(day.main.temp)}°F</h4>
+                </li>
+              ))}
+            </ul>
+          </>
+        ))
+        }
       </div>
     </div>
   );
