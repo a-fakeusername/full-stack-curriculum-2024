@@ -1,5 +1,6 @@
-// Importing Firebase Admin SDK to interact with Firebase services
-const admin = require("firebase-admin");
+const { initializeApp } = require("firebase/app");
+const { getAuth } = require("firebase/auth");
+const { getFirestore } = require("firebase/firestore");
 require("dotenv").config();
 
 // Parsing the FIREBASE_CREDENTIALS environment variable from a string into a JavaScript object
@@ -13,14 +14,24 @@ require("dotenv").config();
 // Your .env file should be added to your .gitignore to keep sensitive data secure.
 //  -> This is already done for you. But double check! You really don't want your credentials pushed to the web.
 
-const creds = JSON.parse(process.env.FIREBASE_CREDENTIALS);
+// const creds = JSON.parse(process.env.FIREBASE_CREDENTIALS);
 
-// Initializing Firebase Admin SDK with credentials and database URL
-admin.initializeApp({
-  credential: admin.credential.cert(creds),
-  databaseURL: "https://tpeo-todo.firebaseio.com",  // TODO: replace with your database URL
-});
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDlb9VzQy1l-JFMI6LS82FLOj9ax_grm24",
+  authDomain: "todo-2ad82.firebaseapp.com",
+  projectId: "todo-2ad82",
+  storageBucket: "todo-2ad82.firebasestorage.app",
+  messagingSenderId: "1004456699335",
+  appId: "1:1004456699335:web:5ec4a1f99e503de8bc65e2",
+  measurementId: "G-1N0QRW3MLJ"
+};
 
-const db = admin.firestore();
+// Initialize Firebase
+const firebase = initializeApp(firebaseConfig);
 
-module.exports = db;
+const auth = getAuth(firebase);
+const db = getFirestore(firebase);
+
+module.exports = { firebase, auth, db };

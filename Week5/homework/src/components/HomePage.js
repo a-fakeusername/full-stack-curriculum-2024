@@ -33,7 +33,7 @@ export default function HomePage() {
       navigate('/login');
       return;
     }
-    fetch(`https://tpeo-todo.vercel.app/tasks/${user}`).then((response) => {
+    fetch(`http://localhost:3001/tasks/${user}`).then((response) => {
       if (response.ok) {
         return response.json();
       }
@@ -58,7 +58,7 @@ export default function HomePage() {
         finished: false,
       };
     
-      fetch(`https://tpeo-todo.vercel.app/tasks/`, {
+      fetch(`http://localhost:3001/tasks/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -89,8 +89,8 @@ export default function HomePage() {
     // TODO: Support removing/checking off todo items in your todo list through the API.
     // Similar to adding tasks, when checking off a task, you should send a request
     // to the API to update the task's status and then update the state based on the response.
-    if (task.finished) {
-      fetch(`https://tpeo-todo.vercel.app/tasks/${task.id}`, {
+    if (!task.finished) {
+      fetch(`http://localhost:3001/tasks/${task.id}`, {
         method: "DELETE"
       });
     }

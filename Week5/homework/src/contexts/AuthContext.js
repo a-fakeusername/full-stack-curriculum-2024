@@ -19,7 +19,7 @@ export function AuthProvider({ children }) {
 
     // Login function that validates the provided username and password.
     const login = (username, password) => {
-        if (username === "monkey" && password === "password") {
+        if (username !== "" && password !== "") {
             setUser(username);
             navigate('/');
             return true;
